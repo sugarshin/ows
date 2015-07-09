@@ -6,8 +6,7 @@ describe 'OWS', ->
 
   describe 'constructor', ->
     it 'extended EventEmitter', ->
-      ows = new OWS
-      assert ows.on
+      assert OWS.__super__.constructor.name is 'EventEmitter'
     it 'defined this.store args', ->
       ows = new OWS [1]
       assert ows._set and ows._set[0] is 1
@@ -26,8 +25,8 @@ describe 'OWS', ->
     it 'delete set', ->
       ows = new OWS
       p = 'payload'
-      ows.add(p).delete(p)
-      assert ows._set.length is 0
+      r = ows.add(p).delete(p)
+      assert ows._set.length is 0 and r
 
   describe '.has()', ->
     it 'has set', ->
@@ -42,11 +41,17 @@ describe 'OWS', ->
       ows.add(1).add(2).clear()
       assert ows._set.length is 0
 
-  describe 'change event', ->
-    it '.on', ->
-      ows = new OWS
+  describe 'event listener', ->
+    ows = new OWS
+    t = false
+    cb = -> t = !t
+    it '.addChangeListener', ->
       p = 1
-      t = false
-      ows.on 'change', -> t = true
+      ows.addChangeListener cb
       ows.add(p)
+      assert t
+
+    it '.removeChangeListener', ->
+      ows.removeChangeListener cb
+      ows.add(2)
       assert t

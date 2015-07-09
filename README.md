@@ -17,12 +17,16 @@ import OWS from 'ows';
 
 let ows = new OWS();
 
-ows.on('change', set => {});
+ows.on(set => {});
 
 ows.add('val'); // => emit change event
 ```
 
 ## Methods
+
+### `.on(handler)`
+
+### `.off(handler)`
 
 ### `.add(payload);`
 

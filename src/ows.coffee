@@ -11,6 +11,8 @@ includes = require 'lodash.includes'
 remove = require 'lodash.remove'
 isArray = require 'isarray'
 
+CHANGE_EVENT = 'change'
+
 module.exports =
 class OWS extends EventEmitter
 
@@ -19,6 +21,10 @@ class OWS extends EventEmitter
       return throw new Error 'Argument should be an Array.'
 
     super()
+
+  on: (callback) -> super CHANGE_EVENT, callback
+
+  off: (callback) -> super CHANGE_EVENT, callback
 
   add: (payload) ->
     unless @has payload
@@ -30,7 +36,8 @@ class OWS extends EventEmitter
     if @has payload
       remove @_set, (el) -> el is payload
       @_emitChange()
-    return this
+      return true
+    return false
 
   has: (payload) -> includes @_set, payload
 
@@ -38,11 +45,10 @@ class OWS extends EventEmitter
     if @_set.length > 0
       @_set.length = 0
       @_emitChange()
+    return this
 
-  entries: ->
+  _emitChange: -> @emit CHANGE_EVENT, @_set
 
-  keys: ->
-
-  values: ->
-
-  _emitChange: -> @emit 'change', @_set
+  # alias
+  addChangeListener: @::on
+  removeChangeListener: @::off
