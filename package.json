@@ -17,8 +17,8 @@
   "scripts": {
     "lint": "coffeelint -f coffeelint.json src/",
     "test": "mocha --require espower-coffee/guess test/**/*.coffee",
-    "compile": "coffee -c -o lib/ src/",
-    "standalone": "browserify src/ows.coffee -t coffeeify -s OWS | derequire > build/ows.js",
+    "compile": "coffee --no-header -c -o lib/ src/",
+    "standalone": "browserify src/ows.coffee -t coffeeify --extension='.coffee' -s OWS | derequire > build/ows.js",
     "minify": "uglifyjs build/ows.js -m -c warnings=false --comments '/\\/*!/' -o build/ows.min.js",
     "build": "npm run lint && npm run compile && npm run test && npm run standalone && npm run minify"
   },
@@ -28,10 +28,7 @@
   "author": "sugarshin",
   "license": "MIT",
   "dependencies": {
-    "eventemitter3": "^1.1.1",
-    "isarray": "0.0.1",
-    "lodash.includes": "^3.1.3",
-    "lodash.remove": "^3.1.0"
+    "isarray": "0.0.1"
   },
   "devDependencies": {
     "browserify": "^10.2.4",

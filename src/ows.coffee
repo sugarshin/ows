@@ -6,10 +6,9 @@
 
 "use strict"
 
-EventEmitter = require 'eventemitter3'
-includes = require 'lodash.includes'
-remove = require 'lodash.remove'
 isArray = require 'isarray'
+
+EventEmitter = require './event-emitter'
 
 CHANGE_EVENT = 'change'
 
@@ -34,17 +33,29 @@ class OWS extends EventEmitter
 
   delete: (payload) ->
     return false unless @has payload
-    remove @_set, (el) -> el is payload
+    @_remove @_set, payload
     @_emitChange()
     return true
 
-  has: (payload) -> includes @_set, payload
+  has: (payload) -> @_includes @_set, payload
 
   clear: ->
     if @_set.length > 0
       @_set.length = 0
       @_emitChange()
     return this
+
+  _includes: (array, payload) ->
+    if array.indexOf(payload) > -1
+      return true
+    else
+      return false
+
+  _remove: (array, payload) ->
+    for el, i in array
+      if el is payload
+        array.splice i, 1
+    return array
 
   _emitChange: -> @emit CHANGE_EVENT, @_set
 
