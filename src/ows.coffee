@@ -33,11 +33,10 @@ class OWS extends EventEmitter
     return this
 
   delete: (payload) ->
-    if @has payload
-      remove @_set, (el) -> el is payload
-      @_emitChange()
-      return true
-    return false
+    return false unless @has payload
+    remove @_set, (el) -> el is payload
+    @_emitChange()
+    return true
 
   has: (payload) -> includes @_set, payload
 
