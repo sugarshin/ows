@@ -28,7 +28,9 @@
   "author": "sugarshin",
   "license": "MIT",
   "dependencies": {
-    "isarray": "0.0.1"
+    "array-filter": "~1.0.0",
+    "indexof": "~0.0.1",
+    "isarray": "~0.0.1"
   },
   "devDependencies": {
     "browserify": "^10.2.4",
