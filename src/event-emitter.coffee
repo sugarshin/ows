@@ -44,12 +44,10 @@ class EventEmitter
       delete @_events[name]
     return this
 
-  emit: (args...) ->
-    name = args.shift()
-    callbacks = @_events[name]
+  emit: (event, args...) ->
+    callbacks = @_events[event]
     unless callbacks then return this
-    for cb in callbacks
-      if cb.apply(@, args) is false then break
+    for cb in callbacks then cb.apply @, args
     return this
 
   # Alias
