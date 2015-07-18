@@ -1,9 +1,47 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.OWS = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+
+/**
+ * Array#filter.
+ *
+ * @param {Array} arr
+ * @param {Function} fn
+ * @param {Object=} self
+ * @return {Array}
+ * @throw TypeError
+ */
+
+module.exports = function (arr, fn, self) {
+  if (arr.filter) return arr.filter(fn, self);
+  if (void 0 === arr || null === arr) throw new TypeError;
+  if ('function' != typeof fn) throw new TypeError;
+  var ret = [];
+  for (var i = 0; i < arr.length; i++) {
+    if (!hasOwn.call(arr, i)) continue;
+    var val = arr[i];
+    if (fn.call(self, val, i, arr)) ret.push(val);
+  }
+  return ret;
+};
+
+var hasOwn = Object.prototype.hasOwnProperty;
+
+},{}],2:[function(_dereq_,module,exports){
+
+var indexOf = [].indexOf;
+
+module.exports = function(arr, obj){
+  if (indexOf) return arr.indexOf(obj);
+  for (var i = 0; i < arr.length; ++i) {
+    if (arr[i] === obj) return i;
+  }
+  return -1;
+};
+},{}],3:[function(_dereq_,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],2:[function(_dereq_,module,exports){
+},{}],4:[function(_dereq_,module,exports){
 
 /*!
  * @license event-emitter
@@ -71,18 +109,15 @@ module.exports = EventEmitter = (function() {
   };
 
   EventEmitter.prototype.emit = function() {
-    var args, callbacks, cb, j, len, name;
-    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    name = args.shift();
-    callbacks = this._events[name];
+    var args, callbacks, cb, event, j, len;
+    event = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    callbacks = this._events[event];
     if (!callbacks) {
       return this;
     }
     for (j = 0, len = callbacks.length; j < len; j++) {
       cb = callbacks[j];
-      if (cb.apply(this, args) === false) {
-        break;
-      }
+      cb.apply(this, args);
     }
     return this;
   };
@@ -102,7 +137,7 @@ module.exports = EventEmitter = (function() {
 })();
 
 
-},{}],3:[function(_dereq_,module,exports){
+},{}],5:[function(_dereq_,module,exports){
 
 /*!
  * @license ows
@@ -110,11 +145,15 @@ module.exports = EventEmitter = (function() {
  * License: MIT
  */
 "use strict";
-var CHANGE_EVENT, EventEmitter, OWS, isArray,
+var CHANGE_EVENT, EventEmitter, OWS, filter, indexOf, isArray,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
 isArray = _dereq_('isarray');
+
+indexOf = _dereq_('indexof');
+
+filter = _dereq_('array-filter');
 
 EventEmitter = _dereq_('./event-emitter');
 
@@ -151,13 +190,19 @@ module.exports = OWS = (function(superClass) {
     if (!this.has(payload)) {
       return false;
     }
-    this._remove(this._set, payload);
+    this._set = filter(this._set, function(el, i) {
+      return el !== payload;
+    });
     this._emitChange();
     return true;
   };
 
   OWS.prototype.has = function(payload) {
-    return this._includes(this._set, payload);
+    if (indexOf(this._set, payload) > -1) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   OWS.prototype.clear = function() {
@@ -166,25 +211,6 @@ module.exports = OWS = (function(superClass) {
       this._emitChange();
     }
     return this;
-  };
-
-  OWS.prototype._includes = function(array, payload) {
-    if (array.indexOf(payload) > -1) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  OWS.prototype._remove = function(array, payload) {
-    var el, i, j, len;
-    for (i = j = 0, len = array.length; j < len; i = ++j) {
-      el = array[i];
-      if (el === payload) {
-        array.splice(i, 1);
-      }
-    }
-    return array;
   };
 
   OWS.prototype._emitChange = function() {
@@ -200,5 +226,5 @@ module.exports = OWS = (function(superClass) {
 })(EventEmitter);
 
 
-},{"./event-emitter":2,"isarray":1}]},{},[3])(3)
+},{"./event-emitter":4,"array-filter":1,"indexof":2,"isarray":3}]},{},[5])(5)
 });

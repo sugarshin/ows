@@ -7,6 +7,8 @@
 "use strict"
 
 isArray = require 'isarray'
+indexOf = require 'indexof'
+filter = require 'array-filter'
 
 EventEmitter = require './event-emitter'
 
@@ -33,29 +35,21 @@ class OWS extends EventEmitter
 
   delete: (payload) ->
     return false unless @has payload
-    @_remove @_set, payload
+    @_set = filter @_set, (el, i) -> el isnt payload
     @_emitChange()
     return true
 
-  has: (payload) -> @_includes @_set, payload
+  has: (payload) ->
+    if indexOf(@_set, payload) > -1
+      return true
+    else
+      return false
 
   clear: ->
     if @_set.length > 0
       @_set.length = 0
       @_emitChange()
     return this
-
-  _includes: (array, payload) ->
-    if array.indexOf(payload) > -1
-      return true
-    else
-      return false
-
-  _remove: (array, payload) ->
-    for el, i in array
-      if el is payload
-        array.splice i, 1
-    return array
 
   _emitChange: -> @emit CHANGE_EVENT, @_set
 
