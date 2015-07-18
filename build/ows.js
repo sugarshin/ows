@@ -59,24 +59,22 @@ module.exports = EventEmitter = (function() {
 
   EventEmitter.prototype.on = function(event, handler) {
     var base;
-    this._events || (this._events = {});
     if (typeof handler !== 'function') {
-      throw new Error('on only accepts instances of Function');
+      throw new Error(handler + " is not a function");
     }
     (base = this._events)[event] || (base[event] = []);
     this._events[event].push(handler);
     return this;
   };
 
-  EventEmitter.prototype.one = function(event, handler) {
-    var _handler;
-    this._events || (this._events = {});
+  EventEmitter.prototype.once = function(event, handler) {
+    var _self;
     if (typeof handler !== 'function') {
-      throw new Error('on only accepts instances of Function');
+      throw new Error(handler + " is not a function");
     }
-    this.on(event, _handler = (function(_this) {
+    this.on(event, _self = (function(_this) {
       return function() {
-        _this.off(event, _handler);
+        _this.off(event, _self);
         return handler.apply(_this, arguments);
       };
     })(this));
@@ -84,23 +82,22 @@ module.exports = EventEmitter = (function() {
   };
 
   EventEmitter.prototype.off = function(event, handler) {
-    var callbacks, cb, i, j, len;
+    var handlers, i, len;
     if (!event) {
-      this._events || (this._events = {});
       return this;
     }
-    if (!(callbacks = this._events[event])) {
+    if (!(handlers = this._events[event])) {
       return this;
     }
     if (handler) {
-      for (i = j = 0, len = callbacks.length; j < len; i = ++j) {
-        cb = callbacks[i];
-        if (!(cb === handler)) {
-          continue;
+      i = 0;
+      len = handlers.length;
+      while (i < len) {
+        if (handler === handlers[i]) {
+          handlers.splice(i, 1);
+        } else {
+          i++;
         }
-        callbacks = callbacks.slice();
-        callbacks.splice(i, 1);
-        this._events[event] = callbacks;
       }
     } else {
       delete this._events[name];
@@ -109,28 +106,20 @@ module.exports = EventEmitter = (function() {
   };
 
   EventEmitter.prototype.emit = function() {
-    var args, callbacks, cb, event, j, len;
+    var args, callbacks, cb, event, j, len1;
     event = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
     callbacks = this._events[event];
     if (!callbacks) {
       return this;
     }
-    for (j = 0, len = callbacks.length; j < len; j++) {
+    for (j = 0, len1 = callbacks.length; j < len1; j++) {
       cb = callbacks[j];
       cb.apply(this, args);
     }
     return this;
   };
 
-  EventEmitter.prototype.addListener = EventEmitter.prototype.on;
-
-  EventEmitter.prototype.removeListener = EventEmitter.prototype.off;
-
-  EventEmitter.prototype.rmListener = EventEmitter.prototype.off;
-
-  EventEmitter.prototype.once = EventEmitter.prototype.one;
-
-  EventEmitter.prototype.trigger = EventEmitter.prototype.emit;
+  EventEmitter.prototype.one = EventEmitter.prototype.once;
 
   return EventEmitter;
 

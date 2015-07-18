@@ -12,34 +12,32 @@ class EventEmitter
   constructor: -> @_events = {}
 
   on: (event, handler) ->
-    @_events or= {}
     if typeof handler isnt 'function'
-      throw new Error 'on only accepts instances of Function'
+      throw new Error "#{handler} is not a function"
     @_events[event] or= []
     @_events[event].push handler
     return this
 
-  one: (event, handler) ->
-    @_events or= {}
+  once: (event, handler) ->
     if typeof handler isnt 'function'
-      throw new Error 'on only accepts instances of Function'
-    @on event, _handler = =>
-      @off event, _handler
+      throw new Error "#{handler} is not a function"
+    @on event, _self = =>
+      @off event, _self
       handler.apply @, arguments
     return this
 
   off: (event, handler) ->
-    unless event
-      @_events or= {}
-      return this
-
-    return this unless callbacks = @_events[event]
+    unless event then return this
+    unless handlers = @_events[event] then return this
 
     if handler
-      for cb, i in callbacks when cb is handler
-        callbacks = callbacks.slice()
-        callbacks.splice i, 1
-        @_events[event] = callbacks
+      i = 0
+      len = handlers.length
+      while i < len
+        if handler is handlers[i]
+          handlers.splice i, 1
+        else
+          i++
     else
       delete @_events[name]
     return this
@@ -51,8 +49,4 @@ class EventEmitter
     return this
 
   # Alias
-  addListener: @::on
-  removeListener: @::off
-  rmListener: @::off
-  once: @::one
-  trigger: @::emit
+  one: @::once
