@@ -33,14 +33,14 @@
     "isarray": "~0.0.1"
   },
   "devDependencies": {
-    "browserify": "^10.2.4",
+    "browserify": "^11.0.1",
     "coffee-script": "^1.9.3",
     "coffeeify": "^1.1.0",
     "coffeelint": "^1.10.1",
     "derequire": "^2.0.0",
-    "espower-coffee": "^0.10.0",
+    "espower-coffee": "^1.0.0",
     "mocha": "^2.2.5",
-    "power-assert": "^0.11.0",
+    "power-assert": "^1.0.0",
     "uglify-js": "^2.4.23"
   }
 }
