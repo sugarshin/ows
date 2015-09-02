@@ -6,11 +6,10 @@
 
 "use strict"
 
+{ EventEmitter } = require 'events'
 isArray = require 'isarray'
 indexOf = require 'indexof'
 filter = require 'array-filter'
-
-EventEmitter = require './event-emitter'
 
 CHANGE_EVENT = 'change'
 
@@ -25,7 +24,7 @@ class OWS extends EventEmitter
 
   on: (callback) -> super CHANGE_EVENT, callback
 
-  off: (callback) -> super CHANGE_EVENT, callback
+  removeListener: (callback) -> super CHANGE_EVENT, callback
 
   add: (payload) ->
     unless @has payload
@@ -55,4 +54,5 @@ class OWS extends EventEmitter
 
   # alias
   addChangeListener: @::on
-  removeChangeListener: @::off
+  removeChangeListener: @::removeListener
+  off: @::removeListener

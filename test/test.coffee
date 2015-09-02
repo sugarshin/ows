@@ -75,16 +75,44 @@ describe 'OWS', ->
       assert ows._set.length is 0
 
   describe 'event listener', ->
-    ows = new OWS
-    t = false
-    cb = -> t = !t
     it '.addChangeListener', ->
+      ows = new OWS
+      t = false
+      cb = -> t = !t
       p = 1
       ows.addChangeListener cb
       ows.add(p)
       assert t
 
+    it '.on', ->
+      ows = new OWS
+      t = false
+      cb = -> t = !t
+      p = 1
+      ows.on cb
+      ows.add(p)
+      assert t
+
     it '.removeChangeListener', ->
+      ows = new OWS
+      t = false
+      cb = -> t = !t
       ows.removeChangeListener cb
       ows.add(2)
-      assert t
+      assert t is false
+
+    it '.removeListener', ->
+      ows = new OWS
+      t = false
+      cb = -> t = !t
+      ows.removeListener cb
+      ows.add(2)
+      assert t is false
+
+    it '.off', ->
+      ows = new OWS
+      t = false
+      cb = -> t = !t
+      ows.off cb
+      ows.add(2)
+      assert t is false
