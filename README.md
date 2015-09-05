@@ -15,10 +15,9 @@ npm i ows
 ```js
 import OWS from 'ows';
 
-let ows = new OWS();
+const ows = new OWS();
 
 ows.on(set => {});
-
 ows.add('val'); // => emit change event
 ```
 
@@ -26,15 +25,45 @@ ows.add('val'); // => emit change event
 
 ### `.on(handler)`
 
+inherit [EventEmitter](https://nodejs.org/api/events.html#events_class_events_eventemitter)
+
+*Returns* `ows`
+
 ### `.off(handler)`
+
+inherit [EventEmitter](https://nodejs.org/api/events.html#events_class_events_eventemitter)
+
+*Returns* `ows`
 
 ### `.add(payload);`
 
+add payload
+
+successful emit `change` event
+
+*Returns* `ows`
+
 ### `.delete(payload);`
+
+delete payload
+
+successful emit `change` event
+
+*Returns* Bool
 
 ### `.has(payload);`
 
+has payload
+
+*Returns* Bool
+
 ### `.clear(payload);`
+
+clear set
+
+successful emit `change` event
+
+*Returns* `ows`
 
 ## Contributing
 
@@ -43,12 +72,6 @@ ows.add('val'); // => emit change event
 3. Commit your changes: git commit -am 'Add some feature'
 4. Push to the branch: git push origin my-new-feature
 5. Submit a pull request :D
-
-## Test
-
-```
-npm test
-```
 
 ## License
 
