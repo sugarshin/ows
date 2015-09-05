@@ -18,7 +18,7 @@ class OWS extends EventEmitter
 
   constructor: (@_set = []) ->
     unless isArray(@_set)
-      return throw new Error 'Argument should be an Array.'
+      throw new TypeError 'expected a array.'
 
     super()
 

@@ -116,3 +116,12 @@ describe 'OWS', ->
       ows.off cb
       ows.add(2)
       assert t is false
+
+  describe 'error', ->
+    it 'constructor type error', ->
+      assert.throws(
+        -> new OWS {}
+        (err) ->
+          return true if (err instanceof TypeError) and /expected a array./.test(err)
+        'unexpected error'
+      )
