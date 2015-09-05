@@ -372,7 +372,7 @@ module.exports = OWS = (function(superClass) {
   function OWS(_set) {
     this._set = _set != null ? _set : [];
     if (!isArray(this._set)) {
-      throw new Error('Argument should be an Array.');
+      throw new TypeError('expected a array.');
     }
     OWS.__super__.constructor.call(this);
   }
